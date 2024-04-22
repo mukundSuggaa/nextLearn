@@ -31,6 +31,12 @@ export type Revenue = {
   revenue: number;
 };
 
+export type Todo = {
+  id: string;
+  order?: number;
+  description: String;
+};
+
 export type LatestInvoice = {
   id: string;
   name: string;

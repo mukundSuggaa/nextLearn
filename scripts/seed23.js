@@ -1,12 +1,9 @@
-const { db } = require('@vercel/postgres');
-const dotenv = require('dotenv');
-dotenv.config();
+const { db, createClient } = require('@vercel/postgres');
 const {
   invoices,
   customers,
   revenue,
   users,
-  todos,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -45,42 +42,6 @@ async function seedUsers(client) {
     };
   } catch (error) {
     console.error('Error seeding users:', error);
-    throw error;
-  }
-}
-
-async function seedTodo(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    // Create the "users" table if it doesn't exist
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS todos (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      description VARCHAR(255) NOT NULL
-    );
-    `;
-
-    console.log(`Created "todos" table`);
-
-    // Insert data into the "users" table
-    const insertedTodos = await Promise.all(
-      todos.map(async (todo) => {
-        return client.sql`
-        INSERT INTO todos (description)
-        VALUES (${todo.description})
-        ON CONFLICT (id) DO NOTHING;
-      `;
-      }),
-    );
-
-    console.log(`Seeded ${insertedTodos.length} todos`);
-
-    return {
-      createTable,
-      todos: insertedTodos,
-    };
-  } catch (error) {
-    console.error('Error seeding todos:', error);
     throw error;
   }
 }
@@ -200,13 +161,18 @@ async function seedRevenue(client) {
 }
 
 async function main() {
-  const client = await db.connect();
+  // const client = await db.connect();
+
+  const client = createClient({
+    connectionString: process.env.POSTGRES_URL
+  });
+
+  await client.connect();
 
   await seedUsers(client);
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
-  await seedTodo(client);
 
   await client.end();
 }

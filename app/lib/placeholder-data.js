@@ -180,9 +180,41 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
+const todos = [
+  {
+    id: '1',
+    description: 'Buy milk',
+  },
+  {
+    id: '2',
+    description: 'Buy eggs',
+  },
+  {
+    id: '3',
+    description: 'Buy bread',
+  },
+  {
+    id: '4',
+    description: 'Buy cheese',
+  },
+  {
+    id: '5',
+    description: 'Buy apples',
+  },
+  {
+    id: '6',
+    description: 'Buy oranges',
+  },
+  {
+    id: '7',
+    description: 'Buy bananas',
+  },
+];
+
 module.exports = {
   users,
   customers,
   invoices,
   revenue,
+  todos,
 };
